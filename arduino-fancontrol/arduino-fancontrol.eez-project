@@ -274,7 +274,14 @@
               "disabledStateType": "literal",
               "states": "",
               "localStyles": {
-                "objID": "16c74894-48c4-4c6f-b8bb-d6ab20918808"
+                "objID": "16c74894-48c4-4c6f-b8bb-d6ab20918808",
+                "definition": {
+                  "MAIN": {
+                    "DEFAULT": {
+                      "img_opa": 0
+                    }
+                  }
+                }
               },
               "group": "",
               "groupIndex": 0,

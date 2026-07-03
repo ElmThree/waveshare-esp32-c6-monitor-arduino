@@ -27,7 +27,7 @@ void create_screen_main() {
     objects.main = obj;
     lv_obj_set_pos(obj, 0, 0);
     lv_obj_set_size(obj, 320, 172);
-    lv_obj_set_style_bg_color(obj, lv_color_hex(0x3c72c3), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     {
         lv_obj_t *parent_obj = obj;
         {
@@ -45,6 +45,7 @@ void create_screen_main() {
             lv_animimg_set_repeat_count(obj, LV_ANIM_REPEAT_INFINITE);
             lv_animimg_start(obj);
             lv_obj_clear_flag(obj, LV_OBJ_FLAG_SCROLLABLE);
+            lv_obj_set_style_img_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
         }
         {
             // CPU

@@ -134,12 +134,14 @@ bool tjpgd_output_cb(int16_t x, int16_t y, uint16_t w, uint16_t h, uint16_t* bit
     LCD_addWindow(x, y, x + w - 1, y + h - 1, bitmap);
     return true;
 }
+bool first_frame_checked = false; // 放一个全局标志位
 
 void Video_Init() {
     // 1. 设置解码器的输出回调
     TJpgDec.setCallback(tjpgd_output_cb);
     // 2. 根据你的副屏微调缩放比例（1代表原图大小不缩放）
     TJpgDec.setJpgScale(1); 
+    TJpgDec.setSwapBytes(true);
     
     // 3. 打开卡里的视频文件
     mjpegFile = SD.open("/background.mjpeg");
@@ -153,14 +155,15 @@ void Video_Init() {
     }
 }
 
+
+
 void Video_Play_Loop() {
     if (!mjpegFile || !mjpegFile.available()) {
-        // 如果文件播完了，立刻回到开头，实现机箱动态背景无限循环
         if (mjpegFile) mjpegFile.seek(0);
         return;
     }
 
-    // --- 核心：寻找 MJPEG 的一帧 (寻找 JPEG 的帧头 0xFFD8) ---
+    // --- 核心：寻找 JPEG 的帧头 0xFFD8 ---
     int32_t frame_start = -1;
     while (mjpegFile.available()) {
         if (mjpegFile.read() == 0xFF) {
@@ -171,14 +174,14 @@ void Video_Play_Loop() {
         }
     }
 
-    if (frame_start < 0) return; // 没找到帧头
+    if (frame_start < 0) return; 
 
-    // --- 核心：寻找这一帧的结尾 (寻找 JPEG 的帧尾 0xFFD9) ---
+    // --- 核心：寻找 JPEG 的帧尾 0xFFD9 ---
     int32_t frame_end = -1;
     while (mjpegFile.available()) {
         if (mjpegFile.read() == 0xFF) {
             if (mjpegFile.peek() == 0xD9) {
-                mjpegFile.read(); // 把 D9 读掉
+                mjpegFile.read(); 
                 frame_end = mjpegFile.position();
                 break;
             }
@@ -188,19 +191,31 @@ void Video_Play_Loop() {
     if (frame_end > frame_start) {
         uint32_t frame_size = frame_end - frame_start;
         
-        // 防止异常大帧撑爆缓冲区
-        if (frame_size < MJPEG_BUFFER_SIZE) {
-            // 回到这一帧的开头，把整帧数据读入 RAM 缓冲区
-            mjpegFile.seek(frame_start);
-            mjpegFile.read(mjpeg_buf, frame_size);
-            
-            // 调用 TJpgDec 解码这一帧，它会自动触发 tjpgd_output_cb 投射到侧板屏幕上
-            TJpgDec.drawJpg(0, 0, mjpeg_buf, frame_size);
+        // 🔎【诊断项 1】：检查单帧大小是否撑爆了 20KB 缓冲区
+        if (frame_size >= MJPEG_BUFFER_SIZE) {
+            printf("⚠️ 警告：当前帧大小 (%d 字节) 超过了 20KB 缓冲区！画面会跳帧或变花！\r\n", frame_size);
+            return;
         }
+
+        // 回到这一帧的开头，把整帧数据读入 RAM 缓冲区
+        mjpegFile.seek(frame_start);
+        mjpegFile.read(mjpeg_buf, frame_size);
+        
+        // 🔎【诊断项 2】：在成功读到第一帧时，强行解析并打印视频的【绝对分辨率】
+        if (!first_frame_checked) {
+            uint16_t vid_w = 0, vid_h = 0;
+            TJpgDec.getJpgSize(&vid_w, &vid_h, mjpeg_buf, frame_size);
+            printf("\r\n🎬 [=== 视频源分辨率诊断 ===]\r\n");
+            printf("  - 视频实际宽度: %d 像素\r\n", vid_w);
+            printf("  - 视频实际高度: %d 像素\r\n", vid_h);
+            printf("============================\r\n\r\n");
+            first_frame_checked = true;
+        }
+        
+        // 调用 TJpgDec 解码这一帧
+        TJpgDec.drawJpg(0, 0, mjpeg_buf, frame_size);
     }
 
-    // 控制帧率：如果是 24 帧的视频，大概每帧间隔 40ms
-    // 因为解码本身需要几毫秒，这里可以给个 30ms-35ms 的延时，或者用 millis() 动态控制
     delay(35); 
 }
 //sd card end
@@ -305,6 +320,17 @@ void loop()
       set_var_chip_temp(String((int)t).c_str());
       last_chip_temp_read = millis();
   }
+
+// ====== video play =====
+  if (is_connected) {
+      // 只有在电脑连接成功、有数据时，才在底层疯狂播放 MJPEG 动态背景
+      Video_Play_Loop(); 
+      
+      // 📢【灵魂一行】：因为视频是直接刷物理屏的，会盖住 LVGL 的文字
+      // 我们在刷完视频帧后，强制让 LVGL 把当前的文字、进度条在视频上方“重新画一遍”
+      //lv_obj_invalidate(lv_scr_act()); 
+  }
+
 
   Timer_Loop();
   ui_tick();
