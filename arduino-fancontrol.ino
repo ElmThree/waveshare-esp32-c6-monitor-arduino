@@ -6,7 +6,7 @@
 
 //sd card
 #include "SD_Card.h"
-#include <TJpgDec.h>  // ESP32 最常用的硬件/软件混合优化 JPEG 解码库
+#include <TJpg_Decoder.h>  // ESP32 最常用的硬件/软件混合优化 JPEG 解码库
 File mjpegFile;
 #define MJPEG_BUFFER_SIZE 20480 // 20KB 缓冲区，足够装下 172x320 的单帧 JPEG
 uint8_t mjpeg_buf[MJPEG_BUFFER_SIZE];
@@ -125,9 +125,6 @@ extern "C" void set_var_chip_temp(const char *value) {
 extern void Set_Backlight(uint8_t Light);
 
 //sd card
-File mjpegFile;
-#define MJPEG_BUFFER_SIZE 20480 // 20KB 缓冲区，足够装下 172x320 的单帧 JPEG
-uint8_t mjpeg_buf[MJPEG_BUFFER_SIZE];
 
 // LVGL 的显示回调，或者是你的底层屏幕渲染函数
 // TJpgDec 解码出像素后，会自动调用这个回调函数把它刷到屏幕上
@@ -148,6 +145,11 @@ void Video_Init() {
     mjpegFile = SD.open("/background.mjpeg");
     if (!mjpegFile) {
         printf("Failed to open background.mjpeg!\r\n");
+    }
+    else {
+        // ✨ 新增成功日志
+        printf("✅ 成功：background.mjpeg 已顺利打开！\r\n");
+        printf("📁 视频文件大小: %d 字节\r\n", mjpegFile.size());
     }
 }
 
@@ -209,6 +211,7 @@ void setup()
   Lvgl_Init();
   ui_init();
   SD_Init();
+  Video_Init();
   Serial.begin(115200);
 
   temperature_sensor_config_t temp_config = TEMPERATURE_SENSOR_CONFIG_DEFAULT(20, 100);
