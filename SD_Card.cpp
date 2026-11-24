@@ -7,7 +7,7 @@ bool SD_Init() {
   // SD
   pinMode(SD_CS, OUTPUT);    
   digitalWrite(SD_CS, HIGH);               
-  if (SD.begin(SD_CS, SPI)) {
+  if (SD.begin(SD_CS, SPI, 40000000)) {
     printf("SD card initialization successful!\r\n");
   } else {
     printf("SD card initialization failed!\r\n");

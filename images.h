@@ -7,9 +7,6 @@
 extern "C" {
 #endif
 
-extern const lv_img_dsc_t img__3;
-extern const lv_img_dsc_t img__2;
-extern const lv_img_dsc_t img__1;
 extern const lv_img_dsc_t img__5;
 extern const lv_img_dsc_t img__4;
 
@@ -21,7 +18,7 @@ typedef struct _ext_img_desc_t {
 } ext_img_desc_t;
 #endif
 
-extern const ext_img_desc_t images[5];
+extern const ext_img_desc_t images[2];
 
 #ifdef __cplusplus
 }

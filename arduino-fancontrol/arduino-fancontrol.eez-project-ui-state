@@ -2,9 +2,9 @@
   "navigation": {
     "selectedUserPageObject": "[arduino-fancontrol.eez-project]:/userPages/0",
     "selectedGlobalVariableObject": "[arduino-fancontrol.eez-project]:/variables/globalVariables/10",
-    "selectedStyleObject": "[arduino-fancontrol.eez-project]:/lvglStyles/styles/0/childStyles/0",
+    "selectedStyleObject": "[arduino-fancontrol.eez-project]:/lvglStyles/styles/0",
     "selectedFontObject": "[arduino-fancontrol.eez-project]:/fonts/0",
-    "selectedBitmapObject": "[arduino-fancontrol.eez-project]:/bitmaps/3",
+    "selectedBitmapObject": "[arduino-fancontrol.eez-project]:/bitmaps/1",
     "subnavigationSelectedItems": {
       "variables-tab/sub-navigation/selected-item": "Global"
     }
@@ -27,7 +27,7 @@
           },
           {
             "type": "border",
-            "selected": 0,
+            "selected": 2,
             "size": 240,
             "location": "right",
             "children": [
@@ -220,7 +220,8 @@
                   },
                   "icon": "svg:page"
                 }
-              ]
+              ],
+              "active": true
             },
             {
               "type": "row",
@@ -240,8 +241,7 @@
                       "enableClose": false,
                       "icon": "svg:properties"
                     }
-                  ],
-                  "active": true
+                  ]
                 },
                 {
                   "type": "tabset",
@@ -1086,26 +1086,17 @@
       "selectionFront": {},
       "selectionBack": {
         "0": {
-          "0": {},
           "1": {
-            "4": {}
-          },
-          "2": {
-            "1": {}
-          },
-          "3": {},
-          "4": {},
-          "5": {},
-          "6": {},
-          "8": {
             "$selected": true
-          }
+          },
+          "6": {},
+          "9": {}
         }
       },
       "transform": {
         "translate": {
           "x": -28.241363717128706,
-          "y": -114.16226723525179
+          "y": -114.16226723525176
         },
         "scale": 1.1
       },
@@ -1157,7 +1148,9 @@
     "POSITION AND SIZE",
     "LINE",
     "TEXT",
-    "MISCELLANEOUS"
+    "MISCELLANEOUS",
+    "BACKGROUND",
+    "IMAGE"
   ],
   "showInactiveFlowsInDebugger": true,
   "globalFlowZoom": true,

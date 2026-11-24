@@ -159,36 +159,35 @@ parameter :
     Xend  :   End uint16_t coordinates
     Yend  :   End uint16_t coordinatesen
 ******************************************************************************/
-void LCD_SetCursor(uint16_t Xstart, uint16_t Ystart, uint16_t Xend, uint16_t  Yend)
+void LCD_SetCursor(uint16_t Xstart, uint16_t Ystart, uint16_t Xend, uint16_t Yend)
 { 
   if (HORIZONTAL) {
-    // set the X coordinates
+    uint16_t xs = Xstart + Offset_X;
+    uint16_t xe = Xend + Offset_X;
+    uint16_t ys = Ystart + Offset_Y;
+    uint16_t ye = Yend + Offset_Y;
+
     LCD_WriteCommand(0x2A);
-    LCD_WriteData(Xstart >> 8);
-    LCD_WriteData(Xstart + Offset_X);
-    LCD_WriteData(Xend >> 8);
-    LCD_WriteData(Xend + Offset_X);
+    LCD_WriteData(xs >> 8);   LCD_WriteData(xs & 0xFF);
+    LCD_WriteData(xe >> 8);   LCD_WriteData(xe & 0xFF);
     
-    // set the Y coordinates
     LCD_WriteCommand(0x2B);
-    LCD_WriteData(Ystart >> 8);
-    LCD_WriteData(Ystart + Offset_Y);
-    LCD_WriteData(Yend >> 8);
-    LCD_WriteData(Yend + Offset_Y);
+    LCD_WriteData(ys >> 8);   LCD_WriteData(ys & 0xFF);
+    LCD_WriteData(ye >> 8);   LCD_WriteData(ye & 0xFF);
   }
   else {
-    // set the X coordinates
+    uint16_t xs = Xstart + Offset_X;
+    uint16_t xe = Xend + Offset_X;
+    uint16_t ys = Ystart + Offset_Y;
+    uint16_t ye = Yend + Offset_Y;
+
     LCD_WriteCommand(0x2A);
-    LCD_WriteData(Ystart >> 8);
-    LCD_WriteData(Ystart + Offset_Y);
-    LCD_WriteData(Yend >> 8);
-    LCD_WriteData(Yend + Offset_Y);
-    // set the Y coordinates
+    LCD_WriteData(ys >> 8);   LCD_WriteData(ys & 0xFF);
+    LCD_WriteData(ye >> 8);   LCD_WriteData(ye & 0xFF);
+
     LCD_WriteCommand(0x2B);
-    LCD_WriteData(Xstart >> 8);
-    LCD_WriteData(Xstart + Offset_X);
-    LCD_WriteData(Xend >> 8);
-    LCD_WriteData(Xend + Offset_X);
+    LCD_WriteData(xs >> 8);   LCD_WriteData(xs & 0xFF);
+    LCD_WriteData(xe >> 8);   LCD_WriteData(xe & 0xFF);
   }
   LCD_WriteCommand(0x2C);
 }

@@ -45,7 +45,13 @@ void create_screen_main() {
             lv_animimg_set_repeat_count(obj, LV_ANIM_REPEAT_INFINITE);
             lv_animimg_start(obj);
             lv_obj_clear_flag(obj, LV_OBJ_FLAG_SCROLLABLE);
-            lv_obj_set_style_img_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+        }
+        {
+            // video_canvas
+            lv_obj_t *obj = lv_canvas_create(parent_obj);
+            objects.video_canvas = obj;
+            lv_obj_set_pos(obj, 0, 0);
+            lv_obj_set_size(obj, 320, 172);
         }
         {
             // CPU

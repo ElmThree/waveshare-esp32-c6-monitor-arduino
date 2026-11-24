@@ -18,6 +18,7 @@ enum ScreensEnum {
 typedef struct _objects_t {
     lv_obj_t *main;
     lv_obj_t *backgroumd_image;
+    lv_obj_t *video_canvas;
     lv_obj_t *cpu;
     lv_obj_t *cpu_temp;
     lv_obj_t *usage_cpu;
